@@ -1,4 +1,5 @@
 import { useQuery, useMutation } from "convex/react";
+import { useRouter } from "expo-router";
 import { useState } from "react";
 import {
   FlatList,
@@ -7,6 +8,7 @@ import {
   TextInput,
   View,
 } from "react-native";
+import { IconSymbol } from "@/components/ui/icon-symbol";
 import { api } from "@/convex/_generated/api";
 import type { Doc } from "@/convex/_generated/dataModel";
 
@@ -46,6 +48,7 @@ function TaskItem({
 }
 
 export default function TasksScreen() {
+  const router = useRouter();
   const tasks = useQuery(api.tasks.list);
   const createTask = useMutation(api.tasks.create);
   const toggleTask = useMutation(api.tasks.toggle);
@@ -61,8 +64,15 @@ export default function TasksScreen() {
 
   return (
     <View className="flex-1 bg-white dark:bg-black">
-      <View className="px-4 pt-16 pb-2">
-        <Text className="text-3xl font-bold">Tasks</Text>
+      <View className="flex-row items-center justify-between px-4 pt-16 pb-2">
+        <Text className="text-3xl font-bold text-navy dark:text-white">Tasks</Text>
+        <Pressable
+          onPress={() => router.push("/design-system")}
+          className="flex-row items-center gap-1.5 rounded-full bg-brand-tint px-3 py-2 active:opacity-80 dark:bg-[#1a2236]"
+        >
+          <IconSymbol size={18} name="paintbrush.fill" color="#0040e7" />
+          <Text className="text-sm font-semibold text-brand">Design</Text>
+        </Pressable>
       </View>
 
       <View className="flex-row items-center gap-2 px-4 py-2">
@@ -76,7 +86,7 @@ export default function TasksScreen() {
         />
         <Pressable
           onPress={handleAdd}
-          className="rounded-xl bg-blue-500 px-5 py-3"
+          className="rounded-xl bg-brand px-5 py-3 active:opacity-80"
         >
           <Text className="font-semibold text-white">Add</Text>
         </Pressable>
