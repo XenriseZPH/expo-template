@@ -7,15 +7,14 @@ import {
   View,
   type ViewStyle,
 } from 'react-native';
-import { FadeIn, FadeOut, ReduceMotion } from 'react-native-reanimated';
+import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import { FullWindowOverlay as RNFullWindowOverlay } from 'react-native-screens';
 
-import { NativeOnlyAnimatedView } from '@/components/ui/native-only-animated-view';
 import { useUIColors } from '@/components/ui/theme';
 
 const isIOS = Platform.OS === 'ios';
 /** How long to keep the host mounted after `visible` flips false so exit animations play. */
-const EXIT_MS = 260;
+const EXIT_MS = 240;
 
 type OverlayProps = {
   visible: boolean;
@@ -24,7 +23,7 @@ type OverlayProps = {
   containerStyle?: ViewStyle;
   /** Tapping the backdrop closes the overlay (default true). */
   dismissOnBackdrop?: boolean;
-  /** The animated content node (supplies its own entering/exiting). */
+  /** The animated content node (supplies its own transition). */
   children: React.ReactNode;
 };
 
@@ -37,33 +36,34 @@ export function Overlay({
 }: OverlayProps) {
   const c = useUIColors();
   const [rendered, setRendered] = useState(visible);
+  const progress = useSharedValue(0);
 
   useEffect(() => {
-    if (visible) {
-      setRendered(true);
-      return;
+    if (visible) setRendered(true);
+    progress.value = withTiming(visible ? 1 : 0, { duration: visible ? 200 : EXIT_MS });
+    if (!visible) {
+      const t = setTimeout(() => setRendered(false), EXIT_MS);
+      return () => clearTimeout(t);
     }
-    const t = setTimeout(() => setRendered(false), EXIT_MS);
-    return () => clearTimeout(t);
-  }, [visible]);
+  }, [visible, progress]);
+
+  const backdropStyle = useAnimatedStyle(() => ({ opacity: progress.value }));
 
   if (!rendered) return null;
 
-  const inner = visible ? (
+  const inner = (
     <>
-      <NativeOnlyAnimatedView
-        entering={FadeIn.duration(180).reduceMotion(ReduceMotion.System)}
-        exiting={FadeOut.duration(180).reduceMotion(ReduceMotion.System)}
-        style={[StyleSheet.absoluteFill, { backgroundColor: c.backdrop }]}>
+      <Animated.View
+        style={[StyleSheet.absoluteFill, { backgroundColor: c.backdrop }, backdropStyle]}>
         {dismissOnBackdrop ? (
           <Pressable style={StyleSheet.absoluteFill} onPress={onClose} />
         ) : null}
-      </NativeOnlyAnimatedView>
+      </Animated.View>
       <View pointerEvents="box-none" style={[{ flex: 1 }, containerStyle]}>
         {children}
       </View>
     </>
-  ) : null;
+  );
 
   if (isIOS) {
     return <RNFullWindowOverlay>{inner}</RNFullWindowOverlay>;

@@ -242,30 +242,25 @@ export default function DesignSystemScreen() {
 
   return (
     <View className="flex-1" style={{ backgroundColor: Colors[colorScheme].background }}>
-      {/* Custom header (respects the status bar) */}
+      {/* Custom header (matches the Profile tab spacing) */}
       <View
-        className="flex-row items-center gap-2 px-4 pb-3"
-        style={{
-          paddingTop: insets.top + 8,
-          borderBottomWidth: 1,
-          borderBottomColor: isDark ? '#232d47' : '#e2e8f0',
-          backgroundColor: Colors[colorScheme].background,
-        }}
+        className="flex-row items-center gap-2 px-6 pb-6"
+        style={{ paddingTop: insets.top + 16 }}
       >
         <Pressable
           onPress={() => router.back()}
           hitSlop={8}
-          className="h-9 w-9 items-center justify-center rounded-full active:opacity-80"
+          className="-ml-2 h-9 w-9 items-center justify-center rounded-full active:opacity-80"
         >
           <IconSymbol name="chevron.left" size={24} color={Brand.primary} />
         </Pressable>
-        <ThemedText type="subtitle">Design System</ThemedText>
+        <ThemedText type="title">Design System</ThemedText>
       </View>
 
       <ScrollView
         className="flex-1"
         style={{ backgroundColor: Colors[colorScheme].background }}
-        contentContainerStyle={{ padding: 16, paddingBottom: 48 }}
+        contentContainerStyle={{ paddingHorizontal: 24, paddingBottom: 48 }}
       >
       {/* Branded hero */}
       <View

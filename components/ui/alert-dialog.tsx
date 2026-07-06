@@ -1,11 +1,11 @@
 import { View } from 'react-native';
-import { FadeIn, FadeOut, ReduceMotion } from 'react-native-reanimated';
+import Animated from 'react-native-reanimated';
 
 import { ThemedText } from '@/components/themed-text';
 import { Button } from '@/components/ui/button';
-import { NativeOnlyAnimatedView } from '@/components/ui/native-only-animated-view';
 import { Overlay } from '@/components/ui/overlay';
 import { LexendFonts, useUIColors } from '@/components/ui/theme';
+import { useOverlayTransition } from '@/components/ui/use-overlay-animation';
 
 export function AlertDialog({
   visible,
@@ -27,16 +27,14 @@ export function AlertDialog({
   onConfirm: () => void;
 }) {
   const c = useUIColors();
+  const style = useOverlayTransition(visible, 'fade');
   return (
     <Overlay
       visible={visible}
       onClose={onClose}
       dismissOnBackdrop={false}
       containerStyle={{ justifyContent: 'center', alignItems: 'center', paddingHorizontal: 24 }}>
-      <NativeOnlyAnimatedView
-        entering={FadeIn.duration(200).reduceMotion(ReduceMotion.System)}
-        exiting={FadeOut.duration(160).reduceMotion(ReduceMotion.System)}
-        style={{ width: '100%', maxWidth: 420 }}>
+      <Animated.View style={[{ width: '100%', maxWidth: 420 }, style]}>
         <View
           className="p-5 rounded-[10px]"
           style={{ backgroundColor: c.surface, borderWidth: 1, borderColor: c.border }}>
@@ -58,7 +56,7 @@ export function AlertDialog({
             </Button>
           </View>
         </View>
-      </NativeOnlyAnimatedView>
+      </Animated.View>
     </Overlay>
   );
 }

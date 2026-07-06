@@ -1,10 +1,12 @@
-import { View } from 'react-native';
-import { SlideInDown, SlideOutDown, ReduceMotion } from 'react-native-reanimated';
+import { Dimensions, View } from 'react-native';
+import Animated from 'react-native-reanimated';
 
 import { ThemedText } from '@/components/themed-text';
-import { NativeOnlyAnimatedView } from '@/components/ui/native-only-animated-view';
 import { Overlay } from '@/components/ui/overlay';
 import { LexendFonts, useUIColors } from '@/components/ui/theme';
+import { useOverlayTransition } from '@/components/ui/use-overlay-animation';
+
+const SCREEN_H = Dimensions.get('window').height;
 
 export function Sheet({
   visible,
@@ -18,12 +20,11 @@ export function Sheet({
   children: React.ReactNode;
 }) {
   const c = useUIColors();
+  const style = useOverlayTransition(visible, 'slide-up', SCREEN_H);
+
   return (
     <Overlay visible={visible} onClose={onClose} containerStyle={{ justifyContent: 'flex-end' }}>
-      <NativeOnlyAnimatedView
-        entering={SlideInDown.duration(260).reduceMotion(ReduceMotion.System)}
-        exiting={SlideOutDown.duration(220).reduceMotion(ReduceMotion.System)}
-        style={{ width: '100%' }}>
+      <Animated.View style={[{ width: '100%' }, style]}>
         <View
           className="rounded-t-[16px] p-5"
           style={{
@@ -46,7 +47,7 @@ export function Sheet({
           ) : null}
           {children}
         </View>
-      </NativeOnlyAnimatedView>
+      </Animated.View>
     </Overlay>
   );
 }

@@ -1,17 +1,13 @@
-import { Pressable, View } from 'react-native';
-import {
-  SlideInLeft,
-  SlideInRight,
-  SlideOutLeft,
-  SlideOutRight,
-  ReduceMotion,
-} from 'react-native-reanimated';
+import { Dimensions, Pressable, View } from 'react-native';
+import Animated from 'react-native-reanimated';
 
 import { ThemedText } from '@/components/themed-text';
 import { Icon } from '@/components/ui/icon';
-import { NativeOnlyAnimatedView } from '@/components/ui/native-only-animated-view';
 import { Overlay } from '@/components/ui/overlay';
 import { LexendFonts, useUIColors } from '@/components/ui/theme';
+import { useOverlayTransition } from '@/components/ui/use-overlay-animation';
+
+const DRAWER_W = Math.min(Dimensions.get('window').width * 0.8, 360);
 
 export function Drawer({
   visible,
@@ -28,22 +24,14 @@ export function Drawer({
 }) {
   const c = useUIColors();
   const isLeft = side === 'left';
-  const entering = (isLeft ? SlideInLeft : SlideInRight)
-    .duration(280)
-    .reduceMotion(ReduceMotion.System);
-  const exiting = (isLeft ? SlideOutLeft : SlideOutRight)
-    .duration(240)
-    .reduceMotion(ReduceMotion.System);
+  const style = useOverlayTransition(visible, isLeft ? 'slide-left' : 'slide-right', DRAWER_W);
 
   return (
     <Overlay
       visible={visible}
       onClose={onClose}
       containerStyle={{ flexDirection: 'row', justifyContent: isLeft ? 'flex-start' : 'flex-end' }}>
-      <NativeOnlyAnimatedView
-        entering={entering}
-        exiting={exiting}
-        style={{ width: '80%', maxWidth: 360, height: '100%' }}>
+      <Animated.View style={[{ width: DRAWER_W, height: '100%' }, style]}>
         <View
           className="p-5"
           style={{
@@ -68,7 +56,7 @@ export function Drawer({
           ) : null}
           {children}
         </View>
-      </NativeOnlyAnimatedView>
+      </Animated.View>
     </Overlay>
   );
 }
