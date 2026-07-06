@@ -11,6 +11,7 @@ import {
 import { ConvexReactClient } from "convex/react";
 import { Stack } from "expo-router";
 import { StatusBar } from 'expo-status-bar';
+import { ToastProvider } from "@/components/ui/toast";
 import { storage } from "@/lib/storage";
 
 const convex = new ConvexReactClient(process.env.EXPO_PUBLIC_CONVEX_URL!, {
@@ -31,20 +32,22 @@ export default function RootLayout() {
 
   return (
     <ConvexAuthProvider client={convex} storage={storage}>
-      <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="index" />
-        <Stack.Screen name="(auth)" />
-        <Stack.Screen name="(tabs)" />
-        <Stack.Screen
-          name="design-system"
-          options={{
-            headerShown: true,
-            title: "Design System",
-            headerBackTitle: "Back",
-          }}
-        />
-      </Stack>
-      <StatusBar style="auto" />
+      <ToastProvider>
+        <Stack screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="index" />
+          <Stack.Screen name="(auth)" />
+          <Stack.Screen name="(tabs)" />
+          <Stack.Screen
+            name="design-system"
+            options={{
+              headerShown: true,
+              title: "Design System",
+              headerBackTitle: "Back",
+            }}
+          />
+        </Stack>
+        <StatusBar style="auto" />
+      </ToastProvider>
     </ConvexAuthProvider>
   );
 }
