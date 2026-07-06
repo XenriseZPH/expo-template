@@ -1,79 +1,111 @@
-import { Image } from '@/components/ui/image';
-import { Platform } from 'react-native';
+import { useQuery, useMutation } from "convex/react";
+import { useState } from "react";
+import {
+  FlatList,
+  Pressable,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
+import { api } from "@/convex/_generated/api";
+import type { Doc } from "@/convex/_generated/dataModel";
 
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
-
-export default function HomeScreen() {
+function TaskItem({
+  task,
+  onToggle,
+  onDelete,
+}: {
+  task: Doc<"tasks">;
+  onToggle: (completed: boolean) => void;
+  onDelete: () => void;
+}) {
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          className="absolute bottom-0 left-0 h-[178px] w-[290px]"
-        />
-      }>
-      <ThemedView className="flex-row items-center gap-2">
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView className="mb-2 gap-2">
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView className="mb-2 gap-2">
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
+    <View className="flex-row items-center gap-3 px-4 py-3">
+      <Pressable
+        onPress={() => onToggle(!task.completed)}
+        className={`h-6 w-6 items-center justify-center rounded-full border-2 ${
+          task.completed
+            ? "border-green-500 bg-green-500"
+            : "border-gray-300"
+        }`}
+      >
+        {task.completed && <Text className="text-xs text-white">✓</Text>}
+      </Pressable>
+      <Text
+        className={`flex-1 text-base ${
+          task.completed ? "text-gray-400 line-through" : "text-gray-900 dark:text-gray-100"
+        }`}
+      >
+        {task.text}
+      </Text>
+      <Pressable onPress={onDelete} className="p-2">
+        <Text className="text-red-500">✕</Text>
+      </Pressable>
+    </View>
+  );
+}
 
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView className="mb-2 gap-2">
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+export default function TasksScreen() {
+  const tasks = useQuery(api.tasks.list);
+  const createTask = useMutation(api.tasks.create);
+  const toggleTask = useMutation(api.tasks.toggle);
+  const deleteTask = useMutation(api.tasks.remove);
+  const [newTaskText, setNewTaskText] = useState("");
+
+  const handleAdd = async () => {
+    const text = newTaskText.trim();
+    if (!text) return;
+    await createTask({ text });
+    setNewTaskText("");
+  };
+
+  return (
+    <View className="flex-1 bg-white dark:bg-black">
+      <View className="px-4 pt-16 pb-2">
+        <Text className="text-3xl font-bold">Tasks</Text>
+      </View>
+
+      <View className="flex-row items-center gap-2 px-4 py-2">
+        <TextInput
+          className="flex-1 rounded-xl border border-gray-300 p-3 text-base"
+          placeholder="Add a task..."
+          placeholderTextColor="#9CA3AF"
+          value={newTaskText}
+          onChangeText={setNewTaskText}
+          onSubmitEditing={handleAdd}
+        />
+        <Pressable
+          onPress={handleAdd}
+          className="rounded-xl bg-blue-500 px-5 py-3"
+        >
+          <Text className="font-semibold text-white">Add</Text>
+        </Pressable>
+      </View>
+
+      {tasks === undefined ? (
+        <View className="flex-1 items-center justify-center">
+          <Text className="text-gray-400">Loading...</Text>
+        </View>
+      ) : tasks.length === 0 ? (
+        <View className="flex-1 items-center justify-center">
+          <Text className="text-gray-400">No tasks yet. Add one above!</Text>
+        </View>
+      ) : (
+        <FlatList
+          data={tasks}
+          keyExtractor={(item) => item._id}
+          renderItem={({ item }) => (
+            <TaskItem
+              task={item}
+              onToggle={(completed) =>
+                toggleTask({ taskId: item._id, completed })
+              }
+              onDelete={() => deleteTask({ taskId: item._id })}
+            />
+          )}
+          className="flex-1"
+        />
+      )}
+    </View>
   );
 }
