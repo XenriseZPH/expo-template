@@ -8,6 +8,8 @@ import {
   View,
 } from "react-native";
 
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+
 import { ThemedText } from "@/components/themed-text";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { api } from "@/convex/_generated/api";
@@ -64,6 +66,7 @@ function TaskItem({
 
 export default function TasksScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const colorScheme = useColorScheme() ?? "light";
   const isDark = colorScheme === "dark";
   const tasks = useQuery(api.tasks.list);
@@ -81,7 +84,10 @@ export default function TasksScreen() {
 
   return (
     <View className="flex-1" style={{ backgroundColor: Colors[colorScheme].background }}>
-      <View className="flex-row items-center justify-between px-6 pt-16 pb-6">
+      <View
+        className="flex-row items-center justify-between px-6 pb-6"
+        style={{ paddingTop: insets.top + 16 }}
+      >
         <ThemedText type="title">Tasks</ThemedText>
         <Pressable
           onPress={() => router.push("/design-system")}

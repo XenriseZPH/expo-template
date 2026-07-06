@@ -37,14 +37,7 @@ export default function RootLayout() {
           <Stack.Screen name="index" />
           <Stack.Screen name="(auth)" />
           <Stack.Screen name="(tabs)" />
-          <Stack.Screen
-            name="design-system"
-            options={{
-              headerShown: true,
-              title: "Design System",
-              headerBackTitle: "Back",
-            }}
-          />
+          <Stack.Screen name="design-system" />
         </Stack>
         <StatusBar style="auto" />
       </ToastProvider>

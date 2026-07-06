@@ -1,5 +1,7 @@
+import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { Pressable, ScrollView, Switch, TextInput, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
@@ -103,24 +105,27 @@ function DesignButton({
   const isDark = colorScheme === 'dark';
 
   const variants = {
-    default: { bg: 'bg-brand', color: '#fff', pressed: Brand.primaryDark },
+    default: { bg: Brand.primary, color: '#fff', pressed: Brand.primaryDark, border: false },
     secondary: {
-      bg: isDark ? 'bg-[#1a2236]' : 'bg-brand-tint',
+      bg: isDark ? '#1a2236' : Brand.secondary,
       color: isDark ? '#fff' : Brand.primary,
       pressed: isDark ? '#232d47' : Brand.primaryLight,
+      border: false,
     },
-    accent: { bg: 'bg-accent', color: Brand.navy, pressed: Brand.accentDark },
+    accent: { bg: Brand.accent, color: Brand.navy, pressed: Brand.accentDark, border: false },
     outline: {
-      bg: 'bg-transparent',
+      bg: 'transparent',
       color: isDark ? '#fff' : Brand.primary,
       pressed: isDark ? '#1a2236' : Brand.secondary,
+      border: true,
     },
     ghost: {
-      bg: 'bg-transparent',
+      bg: 'transparent',
       color: isDark ? '#fff' : Brand.primary,
       pressed: isDark ? '#1a2236' : Brand.secondary,
+      border: false,
     },
-    destructive: { bg: 'bg-ph-red', color: '#fff', pressed: '#a50e1f' },
+    destructive: { bg: Brand.red, color: '#fff', pressed: '#a50e1f', border: false },
   };
 
   const v = variants[variant];
@@ -130,10 +135,10 @@ function DesignButton({
     <Pressable
       onPressIn={() => setPressed(true)}
       onPressOut={() => setPressed(false)}
-      className={`rounded-[10px] px-4 py-2.5 ${v.bg}`}
+      className="rounded-[10px] px-4 py-2.5"
       style={[
-        variant === 'outline' ? { borderWidth: 1.5, borderColor: Brand.primary } : undefined,
-        { backgroundColor: pressed ? v.pressed : undefined },
+        v.border ? { borderWidth: 1.5, borderColor: Brand.primary } : null,
+        { backgroundColor: pressed ? v.pressed : v.bg },
       ]}
     >
       <ThemedText className="text-center text-sm" style={{ color: v.color, fontFamily: LexendFonts.semibold }}>
@@ -197,6 +202,8 @@ function Progress({ value }: { value: number }) {
 export default function DesignSystemScreen() {
   const colorScheme = useColorScheme() ?? 'light';
   const isDark = colorScheme === 'dark';
+  const router = useRouter();
+  const insets = useSafeAreaInsets();
   const [isEnabled, setIsEnabled] = useState(true);
   const [text, setText] = useState('');
   const [checked, setChecked] = useState(true);
@@ -234,11 +241,32 @@ export default function DesignSystemScreen() {
   ];
 
   return (
-    <ScrollView
-      className="flex-1"
-      style={{ backgroundColor: Colors[colorScheme].background }}
-      contentContainerStyle={{ padding: 16, paddingBottom: 48 }}
-    >
+    <View className="flex-1" style={{ backgroundColor: Colors[colorScheme].background }}>
+      {/* Custom header (respects the status bar) */}
+      <View
+        className="flex-row items-center gap-2 px-4 pb-3"
+        style={{
+          paddingTop: insets.top + 8,
+          borderBottomWidth: 1,
+          borderBottomColor: isDark ? '#232d47' : '#e2e8f0',
+          backgroundColor: Colors[colorScheme].background,
+        }}
+      >
+        <Pressable
+          onPress={() => router.back()}
+          hitSlop={8}
+          className="h-9 w-9 items-center justify-center rounded-full active:opacity-80"
+        >
+          <IconSymbol name="chevron.left" size={24} color={Brand.primary} />
+        </Pressable>
+        <ThemedText type="subtitle">Design System</ThemedText>
+      </View>
+
+      <ScrollView
+        className="flex-1"
+        style={{ backgroundColor: Colors[colorScheme].background }}
+        contentContainerStyle={{ padding: 16, paddingBottom: 48 }}
+      >
       {/* Branded hero */}
       <View
         className="mb-5 overflow-hidden rounded-[16px] p-5"
@@ -833,6 +861,7 @@ export default function DesignSystemScreen() {
           <Button variant="ghost" onPress={() => setDrawerOpen(false)}>Settings</Button>
         </View>
       </Drawer>
-    </ScrollView>
+      </ScrollView>
+    </View>
   );
 }

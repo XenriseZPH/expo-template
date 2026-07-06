@@ -2,6 +2,7 @@ import { useAuthActions } from "@convex-dev/auth/react";
 import { useRouter } from "expo-router";
 import { useQuery } from "convex/react";
 import { Pressable, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { ThemedText } from "@/components/themed-text";
 import { IconSymbol } from "@/components/ui/icon-symbol";
@@ -32,6 +33,7 @@ function StatCard({ label, value }: { label: string; value: number }) {
 export default function ProfileScreen() {
   const { signOut } = useAuthActions();
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const colorScheme = useColorScheme() ?? "light";
   const isDark = colorScheme === "dark";
   const tasks = useQuery(api.tasks.list);
@@ -46,7 +48,7 @@ export default function ProfileScreen() {
 
   return (
     <View className="flex-1 px-6" style={{ backgroundColor: Colors[colorScheme].background }}>
-      <View className="pt-16 pb-6">
+      <View className="pb-6" style={{ paddingTop: insets.top + 16 }}>
         <ThemedText type="title">Profile</ThemedText>
       </View>
 
