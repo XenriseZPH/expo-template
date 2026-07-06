@@ -3,6 +3,9 @@
   "main": "expo-router/entry",
   "version": "1.0.0",
   "scripts": {
+    "dev": "npm-run-all --parallel dev:frontend dev:backend",
+    "dev:frontend": "expo start",
+    "dev:backend": "convex dev",
     "start": "expo start",
     "reset-project": "node ./scripts/reset-project.js",
     "android": "expo start --android",
@@ -16,6 +19,7 @@
     "@react-navigation/elements": "^2.6.3",
     "@react-navigation/native": "^7.1.8",
     "babel-preset-expo": "~54.0.10",
+    "convex": "^1.42.1",
     "expo": "~54.0.34",
     "expo-constants": "~18.0.13",
     "expo-font": "~14.0.11",
@@ -45,6 +49,7 @@
     "@types/react": "~19.1.0",
     "eslint": "^9.25.0",
     "eslint-config-expo": "~10.0.0",
+    "npm-run-all": "^4.1.5",
     "typescript": "~5.9.2"
   },
   "private": true
