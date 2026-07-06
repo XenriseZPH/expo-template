@@ -1,11 +1,7 @@
-import { type StyleProp, type TextStyle } from 'react-native';
+import { type StyleProp, type ViewStyle } from 'react-native';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 
-/**
- * Thin wrapper over IconSymbol that accepts any SF Symbol name as a string.
- * Names must exist in the MAPPING in `icon-symbol.tsx` to render on Android/web.
- */
 export function Icon({
   name,
   size = 24,
@@ -16,8 +12,8 @@ export function Icon({
   name: string;
   size?: number;
   color: string;
-  style?: StyleProp<TextStyle>;
+  style?: StyleProp<ViewStyle>;
   className?: string;
 }) {
-  return <IconSymbol name={name as never} size={size} color={color} style={style} className={className} />;
+  return <IconSymbol name={name} size={size} color={color} style={style} className={className} />;
 }

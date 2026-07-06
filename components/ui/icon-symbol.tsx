@@ -1,49 +1,58 @@
-// Fallback for using MaterialIcons on Android and web.
+import { HugeiconsIcon } from '@hugeicons/react-native';
+import type { StyleProp, ViewStyle } from 'react-native';
 
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { SymbolWeight, SymbolViewProps } from 'expo-symbols';
-import { ComponentProps } from 'react';
-import { OpaqueColorValue, type StyleProp, type TextStyle } from 'react-native';
+import {
+  Home01Icon,
+  Airplane01Icon,
+  CodeIcon,
+  ChevronRightIcon,
+  ChevronLeftIcon,
+  ChevronUpIcon,
+  ChevronDownIcon,
+  UnfoldMoreIcon,
+  PaintBrush01Icon,
+  Building01Icon,
+  Cancel01Icon,
+  CheckIcon,
+  CheckmarkCircle01Icon,
+  Alert01Icon,
+  InformationCircleIcon,
+  CancelCircleIcon,
+  Search01Icon,
+  Calendar01Icon,
+  PlusSignIcon,
+  MinusSignIcon,
+  MoreHorizontalIcon,
+  ChevronsRightIcon,
+  ChevronsLeftIcon,
+} from '@hugeicons/core-free-icons';
 
-type IconMapping = Record<SymbolViewProps['name'], ComponentProps<typeof MaterialIcons>['name']>;
-type IconSymbolName = keyof typeof MAPPING;
+const MAPPING: Record<string, typeof Home01Icon> = {
+  'house.fill': Home01Icon,
+  'paperplane.fill': Airplane01Icon,
+  'chevron.left.forwardslash.chevron.right': CodeIcon,
+  'chevron.right': ChevronRightIcon,
+  'chevron.left': ChevronLeftIcon,
+  'chevron.up': ChevronUpIcon,
+  'chevron.down': ChevronDownIcon,
+  'chevron.up.chevron.down': UnfoldMoreIcon,
+  'paintbrush.fill': PaintBrush01Icon,
+  'building.columns.fill': Building01Icon,
+  'xmark': Cancel01Icon,
+  'checkmark': CheckIcon,
+  'checkmark.circle.fill': CheckmarkCircle01Icon,
+  'exclamationmark.triangle.fill': Alert01Icon,
+  'info.circle.fill': InformationCircleIcon,
+  'xmark.circle.fill': CancelCircleIcon,
+  'magnifyingglass': Search01Icon,
+  'calendar': Calendar01Icon,
+  'plus': PlusSignIcon,
+  'minus': MinusSignIcon,
+  'ellipsis': MoreHorizontalIcon,
+  'chevron.right.2': ChevronsRightIcon,
+  'chevron.left.2': ChevronsLeftIcon,
+};
 
-/**
- * Add your SF Symbols to Material Icons mappings here.
- * - see Material Icons in the [Icons Directory](https://icons.expo.fyi).
- * - see SF Symbols in the [SF Symbols](https://developer.apple.com/sf-symbols/) app.
- */
-const MAPPING = {
-  'house.fill': 'home',
-  'paperplane.fill': 'send',
-  'chevron.left.forwardslash.chevron.right': 'code',
-  'chevron.right': 'chevron-right',
-  'chevron.left': 'chevron-left',
-  'chevron.up': 'keyboard-arrow-up',
-  'chevron.down': 'keyboard-arrow-down',
-  'chevron.up.chevron.down': 'unfold-more',
-  'paintbrush.fill': 'brush',
-  'building.columns.fill': 'account-balance',
-  'xmark': 'close',
-  'checkmark': 'check',
-  'checkmark.circle.fill': 'check-circle',
-  'exclamationmark.triangle.fill': 'warning',
-  'info.circle.fill': 'info',
-  'xmark.circle.fill': 'cancel',
-  'magnifyingglass': 'search',
-  'calendar': 'calendar-today',
-  'plus': 'add',
-  'minus': 'remove',
-  'ellipsis': 'more-horiz',
-  'chevron.right.2': 'keyboard-double-arrow-right',
-  'chevron.left.2': 'keyboard-double-arrow-left',
-} as IconMapping;
-
-/**
- * An icon component that uses native SF Symbols on iOS, and Material Icons on Android and web.
- * This ensures a consistent look across platforms, and optimal resource usage.
- * Icon `name`s are based on SF Symbols and require manual mapping to Material Icons.
- */
 export function IconSymbol({
   name,
   size = 24,
@@ -51,12 +60,22 @@ export function IconSymbol({
   style,
   className,
 }: {
-  name: IconSymbolName;
+  name: string;
   size?: number;
-  color: string | OpaqueColorValue;
-  style?: StyleProp<TextStyle>;
-  weight?: SymbolWeight;
+  color: string;
+  style?: StyleProp<ViewStyle>;
   className?: string;
 }) {
-  return <MaterialIcons color={color} size={size} name={MAPPING[name]} style={style} className={className} />;
+  const icon = MAPPING[name];
+  if (!icon) return null;
+
+  return (
+    <HugeiconsIcon
+      icon={icon}
+      size={size}
+      color={color}
+      style={style}
+      className={className}
+    />
+  );
 }
