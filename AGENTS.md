@@ -30,6 +30,17 @@ Use the `ThemedText` component (`components/themed-text.tsx`) for all text — i
 - **Inputs**: `rounded-[10px]` border, fill `#f8faff` (light) / `#0f1424` (dark).
 - **Screen backgrounds**: use `Colors[colorScheme].background` — `#fff` (light) / `#0b1020` navy (dark).
 - **Pressable feedback**: add `active:opacity-80`.
+
+### Spacing
+
+Follow the rhythm established in `app/(tabs)/explore.tsx` (Profile screen):
+
+- **Screen horizontal padding**: `px-6` on the root screen container.
+- **Screen header**: `pt-16 pb-6` (holds the `type="title"` heading).
+- **Between sections / stacked cards**: `mt-4`.
+- **Card / row internal padding**: `p-4`.
+- **Gaps inside a card and between side-by-side tiles**: `gap-3`.
+
 - **Text color on colored fills**: NativeWind's `style` prop overrides `className`, and `ThemedText` sets color via `style`. So on dark fills (brand blue, red) pass the text color explicitly via `style={{ color: '#fff' }}` — a `text-white` className will be silently overridden.
 - Always support light and dark mode via the `useColorScheme` hook.
 

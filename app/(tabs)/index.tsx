@@ -28,7 +28,7 @@ function TaskItem({
   const isDark = colorScheme === "dark";
   return (
     <View
-      className="mx-4 mb-2 flex-row items-center gap-3 rounded-[10px] px-4 py-3"
+      className="mx-6 mb-3 flex-row items-center gap-3 rounded-[10px] p-4"
       style={{
         backgroundColor: isDark ? "#151b2e" : "#fff",
         borderWidth: 1,
@@ -43,9 +43,7 @@ function TaskItem({
           backgroundColor: task.completed ? Brand.green : "transparent",
         }}
       >
-        {task.completed && (
-          <ThemedText className="text-xs" style={{ color: "#fff" }}>✓</ThemedText>
-        )}
+        {task.completed && <IconSymbol size={14} name="checkmark" color="#fff" />}
       </Pressable>
       <ThemedText
         className="flex-1 text-base"
@@ -83,7 +81,7 @@ export default function TasksScreen() {
 
   return (
     <View className="flex-1" style={{ backgroundColor: Colors[colorScheme].background }}>
-      <View className="flex-row items-center justify-between px-4 pt-16 pb-2">
+      <View className="flex-row items-center justify-between px-6 pt-16 pb-6">
         <ThemedText type="title">Tasks</ThemedText>
         <Pressable
           onPress={() => router.push("/design-system")}
@@ -97,9 +95,9 @@ export default function TasksScreen() {
         </Pressable>
       </View>
 
-      <View className="flex-row items-center gap-2 px-4 py-2">
+      <View className="flex-row items-center gap-3 px-6">
         <TextInput
-          className="flex-1 rounded-[10px] border p-3 text-base"
+          className="h-14 flex-1 rounded-[10px] border px-4 text-base"
           placeholder="Add a task..."
           placeholderTextColor={Colors[colorScheme].icon + "99"}
           value={newTaskText}
@@ -114,7 +112,7 @@ export default function TasksScreen() {
         />
         <Pressable
           onPress={handleAdd}
-          className="rounded-[10px] bg-brand px-5 py-3 active:opacity-80"
+          className="h-14 items-center justify-center rounded-[10px] bg-brand px-5 active:opacity-80"
         >
           <ThemedText style={{ color: "#fff", fontFamily: LexendFonts.semibold }}>Add</ThemedText>
         </Pressable>
@@ -134,7 +132,7 @@ export default function TasksScreen() {
         <FlatList
           data={tasks}
           keyExtractor={(item) => item._id}
-          contentContainerStyle={{ paddingTop: 8, paddingBottom: 24 }}
+          contentContainerStyle={{ paddingTop: 16, paddingBottom: 24 }}
           renderItem={({ item }) => (
             <TaskItem
               task={item}

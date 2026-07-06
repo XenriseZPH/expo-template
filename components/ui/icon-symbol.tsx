@@ -21,6 +21,7 @@ const MAPPING = {
   'paintbrush.fill': 'brush',
   'building.columns.fill': 'account-balance',
   'xmark': 'close',
+  'checkmark': 'check',
 } as IconMapping;
 
 /**
