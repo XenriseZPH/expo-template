@@ -39,9 +39,16 @@ export function DropdownMenu({ trigger, items }: DropdownMenuProps) {
 
   return (
     <>
-      <Pressable ref={ref} onPress={openMenu}>
-        {trigger}
-      </Pressable>
+      <View ref={ref} collapsable={false} className="self-start">
+        {React.isValidElement(trigger)
+          ? React.cloneElement(trigger as React.ReactElement<any>, {
+              onPress: () => {
+                (trigger as any)?.props?.onPress?.();
+                openMenu();
+              },
+            })
+          : trigger}
+      </View>
       <Modal
         transparent
         visible={open}

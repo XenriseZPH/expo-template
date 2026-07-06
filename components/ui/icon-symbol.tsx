@@ -25,6 +25,9 @@ import {
   MoreHorizontalIcon,
   ChevronsRightIcon,
   ChevronsLeftIcon,
+  Edit01Icon,
+  Delete01Icon,
+  ClipboardCopyIcon,
 } from '@hugeicons/core-free-icons';
 
 const MAPPING: Record<string, typeof Home01Icon> = {
@@ -51,6 +54,10 @@ const MAPPING: Record<string, typeof Home01Icon> = {
   'ellipsis': MoreHorizontalIcon,
   'chevron.right.2': ChevronsRightIcon,
   'chevron.left.2': ChevronsLeftIcon,
+  'edit': Edit01Icon,
+  'delete': Delete01Icon,
+  'copy': ClipboardCopyIcon,
+  'share': Airplane01Icon,
 };
 
 export function IconSymbol({

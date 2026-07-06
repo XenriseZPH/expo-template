@@ -572,8 +572,8 @@ export default function DesignSystemScreen() {
             </ThemedView>
           }
           items={[
-            { label: 'Copy', icon: 'checkmark', onPress: () => {} },
-            { label: 'Delete', icon: 'xmark', destructive: true, onPress: () => {} },
+            { label: 'Copy', icon: 'copy', onPress: () => {} },
+            { label: 'Delete', icon: 'delete', destructive: true, onPress: () => {} },
           ]}
         />
         <Menubar
@@ -771,20 +771,22 @@ export default function DesignSystemScreen() {
 
       {/* Dropdown & Popover */}
       <SectionTitle>Dropdown & Popover</SectionTitle>
-      <Card className="flex-row gap-3">
+      <Card>
         <DropdownMenu
           trigger={<Button variant="outline" icon="ellipsis">Menu</Button>}
           items={[
-            { label: 'Edit', icon: 'paintbrush.fill', onPress: () => toast({ title: 'Edit' }) },
-            { label: 'Share', icon: 'paperplane.fill', onPress: () => toast({ title: 'Shared' }) },
-            { label: 'Delete', icon: 'xmark', destructive: true, onPress: () => toast({ title: 'Deleted', variant: 'destructive' }) },
+            { label: 'Edit', icon: 'edit', onPress: () => toast({ title: 'Edit' }) },
+            { label: 'Share', icon: 'share', onPress: () => toast({ title: 'Shared' }) },
+            { label: 'Delete', icon: 'delete', destructive: true, onPress: () => toast({ title: 'Deleted', variant: 'destructive' }) },
           ]}
         />
-        <Popover trigger={<Button variant="secondary">Popover</Button>}>
-          <ThemedText className="text-sm leading-5" style={{ maxWidth: 200 }}>
-            Popovers float above content and dismiss on outside tap.
-          </ThemedText>
-        </Popover>
+        <View className="mt-3">
+          <Popover trigger={<Button variant="secondary">Popover</Button>}>
+            <ThemedText className="text-sm leading-5" style={{ maxWidth: 200 }}>
+              Popovers float above content and dismiss on outside tap.
+            </ThemedText>
+          </Popover>
+        </View>
       </Card>
 
       <Separator />

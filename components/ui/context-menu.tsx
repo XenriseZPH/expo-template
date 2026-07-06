@@ -39,9 +39,16 @@ export function ContextMenu({ trigger, items }: ContextMenuProps) {
 
   return (
     <>
-      <Pressable ref={ref} onLongPress={openMenu}>
-        {trigger}
-      </Pressable>
+      <View ref={ref} collapsable={false} className="self-start">
+        {React.isValidElement(trigger)
+          ? React.cloneElement(trigger as React.ReactElement<any>, {
+              onLongPress: () => {
+                (trigger as any)?.props?.onLongPress?.();
+                openMenu();
+              },
+            })
+          : trigger}
+      </View>
       <Modal
         transparent
         visible={open}

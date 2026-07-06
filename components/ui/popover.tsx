@@ -25,9 +25,16 @@ export function Popover({ trigger, children }: PopoverProps) {
 
   return (
     <>
-      <Pressable ref={ref} onPress={toggle} className="active:opacity-80">
-        {trigger}
-      </Pressable>
+      <View ref={ref} collapsable={false} className="self-start">
+        {React.isValidElement(trigger)
+          ? React.cloneElement(trigger as React.ReactElement<any>, {
+              onPress: () => {
+                (trigger as any)?.props?.onPress?.();
+                toggle();
+              },
+            })
+          : trigger}
+      </View>
       <Modal
         transparent
         visible={open}
