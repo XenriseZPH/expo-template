@@ -113,11 +113,6 @@ function Card({ children, className }: { children: React.ReactNode; className?: 
         backgroundColor: isDark ? '#151b2e' : '#fff',
         borderWidth: 1,
         borderColor: isDark ? '#232d47' : '#e2e8f0',
-        shadowColor: Brand.primary,
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: isDark ? 0 : 0.06,
-        shadowRadius: 8,
-        elevation: 2,
       }}
     >
       {children}

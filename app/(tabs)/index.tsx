@@ -4,13 +4,16 @@ import { useState } from "react";
 import {
   FlatList,
   Pressable,
-  Text,
   TextInput,
   View,
 } from "react-native";
+
+import { ThemedText } from "@/components/themed-text";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { api } from "@/convex/_generated/api";
 import type { Doc } from "@/convex/_generated/dataModel";
+import { Brand, Colors, LexendFonts } from "@/constants/theme";
+import { useColorScheme } from "@/hooks/use-color-scheme";
 
 function TaskItem({
   task,
@@ -21,27 +24,41 @@ function TaskItem({
   onToggle: (completed: boolean) => void;
   onDelete: () => void;
 }) {
+  const colorScheme = useColorScheme() ?? "light";
+  const isDark = colorScheme === "dark";
   return (
-    <View className="flex-row items-center gap-3 px-4 py-3">
+    <View
+      className="mx-4 mb-2 flex-row items-center gap-3 rounded-[10px] px-4 py-3"
+      style={{
+        backgroundColor: isDark ? "#151b2e" : "#fff",
+        borderWidth: 1,
+        borderColor: isDark ? "#232d47" : "#e2e8f0",
+      }}
+    >
       <Pressable
         onPress={() => onToggle(!task.completed)}
-        className={`h-6 w-6 items-center justify-center rounded-full border-2 ${
-          task.completed
-            ? "border-green-500 bg-green-500"
-            : "border-gray-300"
-        }`}
+        className="h-6 w-6 items-center justify-center rounded-full border-2"
+        style={{
+          borderColor: task.completed ? Brand.green : Colors[colorScheme].icon + "80",
+          backgroundColor: task.completed ? Brand.green : "transparent",
+        }}
       >
-        {task.completed && <Text className="text-xs text-white">✓</Text>}
+        {task.completed && (
+          <ThemedText className="text-xs" style={{ color: "#fff" }}>✓</ThemedText>
+        )}
       </Pressable>
-      <Text
-        className={`flex-1 text-base ${
-          task.completed ? "text-gray-400 line-through" : "text-gray-900 dark:text-gray-100"
-        }`}
+      <ThemedText
+        className="flex-1 text-base"
+        style={
+          task.completed
+            ? { textDecorationLine: "line-through", opacity: 0.45 }
+            : undefined
+        }
       >
         {task.text}
-      </Text>
+      </ThemedText>
       <Pressable onPress={onDelete} className="p-2">
-        <Text className="text-red-500">✕</Text>
+        <IconSymbol size={18} name="xmark" color={Brand.red} />
       </Pressable>
     </View>
   );
@@ -49,6 +66,8 @@ function TaskItem({
 
 export default function TasksScreen() {
   const router = useRouter();
+  const colorScheme = useColorScheme() ?? "light";
+  const isDark = colorScheme === "dark";
   const tasks = useQuery(api.tasks.list);
   const createTask = useMutation(api.tasks.create);
   const toggleTask = useMutation(api.tasks.toggle);
@@ -63,47 +82,59 @@ export default function TasksScreen() {
   };
 
   return (
-    <View className="flex-1 bg-white dark:bg-black">
+    <View className="flex-1" style={{ backgroundColor: Colors[colorScheme].background }}>
       <View className="flex-row items-center justify-between px-4 pt-16 pb-2">
-        <Text className="text-3xl font-bold text-navy dark:text-white">Tasks</Text>
+        <ThemedText type="title">Tasks</ThemedText>
         <Pressable
           onPress={() => router.push("/design-system")}
-          className="flex-row items-center gap-1.5 rounded-full bg-brand-tint px-3 py-2 active:opacity-80 dark:bg-[#1a2236]"
+          className="flex-row items-center gap-1.5 rounded-full px-3 py-2 active:opacity-80"
+          style={{ backgroundColor: isDark ? "#1a2236" : Brand.secondary }}
         >
-          <IconSymbol size={18} name="paintbrush.fill" color="#0040e7" />
-          <Text className="text-sm font-semibold text-brand">Design</Text>
+          <IconSymbol size={18} name="paintbrush.fill" color={Brand.primary} />
+          <ThemedText className="text-sm" style={{ color: isDark ? "#fff" : Brand.primary, fontFamily: LexendFonts.semibold }}>
+            Design
+          </ThemedText>
         </Pressable>
       </View>
 
       <View className="flex-row items-center gap-2 px-4 py-2">
         <TextInput
-          className="flex-1 rounded-xl border border-gray-300 p-3 text-base"
+          className="flex-1 rounded-[10px] border p-3 text-base"
           placeholder="Add a task..."
-          placeholderTextColor="#9CA3AF"
+          placeholderTextColor={Colors[colorScheme].icon + "99"}
           value={newTaskText}
           onChangeText={setNewTaskText}
           onSubmitEditing={handleAdd}
+          style={{
+            color: Colors[colorScheme].text,
+            borderColor: Colors[colorScheme].icon + "40",
+            backgroundColor: isDark ? "#0f1424" : "#f8faff",
+            fontFamily: LexendFonts.regular,
+          }}
         />
         <Pressable
           onPress={handleAdd}
-          className="rounded-xl bg-brand px-5 py-3 active:opacity-80"
+          className="rounded-[10px] bg-brand px-5 py-3 active:opacity-80"
         >
-          <Text className="font-semibold text-white">Add</Text>
+          <ThemedText style={{ color: "#fff", fontFamily: LexendFonts.semibold }}>Add</ThemedText>
         </Pressable>
       </View>
 
       {tasks === undefined ? (
         <View className="flex-1 items-center justify-center">
-          <Text className="text-gray-400">Loading...</Text>
+          <ThemedText className="opacity-50">Loading...</ThemedText>
         </View>
       ) : tasks.length === 0 ? (
-        <View className="flex-1 items-center justify-center">
-          <Text className="text-gray-400">No tasks yet. Add one above!</Text>
+        <View className="flex-1 items-center justify-center px-8">
+          <ThemedText className="text-center opacity-50">
+            No tasks yet. Add one above!
+          </ThemedText>
         </View>
       ) : (
         <FlatList
           data={tasks}
           keyExtractor={(item) => item._id}
+          contentContainerStyle={{ paddingTop: 8, paddingBottom: 24 }}
           renderItem={({ item }) => (
             <TaskItem
               task={item}

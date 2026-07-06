@@ -20,6 +20,7 @@ const MAPPING = {
   'chevron.right': 'chevron-right',
   'paintbrush.fill': 'brush',
   'building.columns.fill': 'account-balance',
+  'xmark': 'close',
 } as IconMapping;
 
 /**
